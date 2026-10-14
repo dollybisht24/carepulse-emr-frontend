@@ -33,17 +33,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-hospital-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-hospital-950 flex flex-col justify-center py-8 px-4 sm:py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-hospital-500 to-sky-400 shadow-xl shadow-hospital-500/20 mb-4">
-          <Activity className="w-8 h-8 text-white" />
+        <div className="inline-flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-hospital-500 to-sky-400 shadow-xl shadow-hospital-500/20 mb-3 sm:mb-4">
+          <Activity className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
         </div>
-        <h2 className="text-3xl font-extrabold text-white tracking-tight">CarePulse EMR</h2>
-        <p className="mt-2 text-sm text-slate-400">Hospital Appointment Management System</p>
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">CarePulse EMR</h2>
+        <p className="mt-1 sm:mt-2 text-xs sm:text-sm text-slate-400">Hospital Appointment Management System</p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow-2xl rounded-2xl sm:px-10 border border-slate-100">
+      <div className="mt-6 sm:mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-6 sm:py-8 px-5 sm:px-10 shadow-2xl rounded-2xl border border-slate-100">
           <form className="space-y-4" onSubmit={handleSubmit}>
             {error && (
               <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700 font-medium">

@@ -120,11 +120,11 @@ const BookingPage = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-hospital-600" />
+      <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <h1 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-hospital-600 flex-shrink-0" />
           Book Patient Appointment
         </h1>
         <p className="text-xs text-slate-500 mt-1">
@@ -142,10 +142,10 @@ const BookingPage = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
         {/* Step 1: Patient Selection */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <User className="w-4 h-4 text-hospital-600" />
               Step 1: Patient Information
@@ -153,7 +153,7 @@ const BookingPage = () => {
             <button
               type="button"
               onClick={() => setIsPatientModalOpen(true)}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-hospital-600 bg-hospital-50 hover:bg-hospital-100 border border-hospital-200 transition-colors flex items-center gap-1.5"
+              className="w-full sm:w-auto px-3 py-1.5 rounded-lg text-xs font-semibold text-hospital-600 bg-hospital-50 hover:bg-hospital-100 border border-hospital-200 transition-colors flex items-center justify-center gap-1.5"
             >
               <Search className="w-3.5 h-3.5" />
               {selectedPatient ? 'Change Patient' : 'Search / Register Patient'}
@@ -192,7 +192,7 @@ const BookingPage = () => {
         </div>
 
         {/* Step 2: Doctor & Department Selection */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
             <Stethoscope className="w-4 h-4 text-hospital-600" />
             Step 2: Doctor & Department
@@ -242,7 +242,7 @@ const BookingPage = () => {
         </div>
 
         {/* Step 3: Date & Slot Picker */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <Clock className="w-4 h-4 text-hospital-600" />
@@ -265,9 +265,9 @@ const BookingPage = () => {
           {selectedSlot && (
             <div className="p-3 bg-hospital-50 border border-hospital-200 rounded-xl flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 text-hospital-900">
-                <CheckCircle2 className="w-4 h-4 text-hospital-600" />
-                <span>
-                  Selected Slot:{' '}
+                <CheckCircle2 className="w-4 h-4 text-hospital-600 flex-shrink-0" />
+                <span className="truncate">
+                  Selected:{' '}
                   <strong>
                     {new Date(selectedSlot.startAt).toLocaleTimeString([], {
                       hour: '2-digit',
@@ -279,13 +279,13 @@ const BookingPage = () => {
                       minute: '2-digit',
                     })}
                   </strong>{' '}
-                  on {selectedDate}
+                  ({selectedDate})
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedSlot(null)}
-                className="text-[11px] font-semibold text-hospital-700 underline"
+                className="text-[11px] font-semibold text-hospital-700 underline flex-shrink-0 ml-2"
               >
                 Clear
               </button>
@@ -304,7 +304,7 @@ const BookingPage = () => {
         </div>
 
         {/* Step 4: Purpose & Confirm */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
             <FileText className="w-4 h-4 text-hospital-600" />
             Step 4: Purpose of Visit
@@ -324,18 +324,18 @@ const BookingPage = () => {
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-3 border-t border-slate-100">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => navigate('/scheduler')}
-              className="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
+              className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={bookMutation.isPending || !selectedPatient || !selectedSlot}
-              className="px-6 py-2.5 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md shadow-hospital-600/30 flex items-center gap-2 transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md shadow-hospital-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
             >
               {bookMutation.isPending ? 'Confirming Reservation...' : 'Confirm Appointment'}
             </button>

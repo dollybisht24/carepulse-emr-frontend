@@ -123,11 +123,11 @@ const DoctorScheduleManagePage = () => {
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-hospital-600" />
-            Doctor Working Hours & Schedule Management
+          <h1 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-hospital-600 flex-shrink-0" />
+            <span>Doctor Working Hours & Schedule Management</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Configure working days, morning/afternoon sessions, breaks, and slot durations.
@@ -136,7 +136,7 @@ const DoctorScheduleManagePage = () => {
 
         <button
           onClick={() => setIsDoctorModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-hospital-600 hover:bg-hospital-700 shadow-sm transition-all"
+          className="w-full sm:w-auto justify-center inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-hospital-600 hover:bg-hospital-700 shadow-sm transition-all"
         >
           <UserPlus className="w-4 h-4" />
           <span>+ Add New Doctor</span>
@@ -161,7 +161,7 @@ const DoctorScheduleManagePage = () => {
       )}
 
       {/* Doctor Selector */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm">
         <label className="block text-xs font-semibold text-slate-700 mb-1.5 flex items-center gap-1.5">
           <Stethoscope className="w-4 h-4 text-slate-400" />
           Select Doctor to Configure
@@ -183,7 +183,7 @@ const DoctorScheduleManagePage = () => {
       {selectedDoctorId && (
         <form onSubmit={handleSaveSchedule} className="space-y-6">
           {/* Working Days */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
             <h3 className="text-sm font-bold text-slate-900">Working Days of the Week</h3>
             <p className="text-xs text-slate-500">
               Select the days when the doctor is on duty for clinical consultations.
@@ -196,7 +196,7 @@ const DoctorScheduleManagePage = () => {
                     key={d.num}
                     type="button"
                     onClick={() => handleDayToggle(d.num)}
-                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                    className={`flex-1 sm:flex-none min-w-[50px] text-center px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
                       active
                         ? 'bg-hospital-600 text-white shadow-sm ring-2 ring-hospital-400'
                         : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
@@ -210,31 +210,31 @@ const DoctorScheduleManagePage = () => {
           </div>
 
           {/* Slot Duration */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
             <h3 className="text-sm font-bold text-slate-900">Consultation Slot Duration</h3>
             <p className="text-xs text-slate-500">
               Interval length used to divide sessions into bookable appointment slots.
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-2 sm:gap-3">
               {[15, 20, 30, 45, 60].map((dur) => (
                 <button
                   key={dur}
                   type="button"
                   onClick={() => setSlotDuration(dur)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all ${
+                  className={`flex-1 sm:flex-none px-3.5 py-2 rounded-xl text-xs font-bold border transition-all text-center ${
                     slotDuration === dur
                       ? 'bg-hospital-50 text-hospital-700 border-hospital-400 ring-2 ring-hospital-300'
                       : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  {dur} Minutes
+                  {dur} Min
                 </button>
               ))}
             </div>
           </div>
 
           {/* Working Sessions */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold text-slate-900">Working Sessions</h3>
@@ -298,7 +298,7 @@ const DoctorScheduleManagePage = () => {
           </div>
 
           {/* Breaks */}
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
             <div>
               <h3 className="text-sm font-bold text-slate-900">Configured Break Periods</h3>
               <p className="text-xs text-slate-500">
@@ -363,7 +363,7 @@ const DoctorScheduleManagePage = () => {
             <button
               type="submit"
               disabled={saveScheduleMutation.isPending}
-              className="px-6 py-2.5 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md transition-all disabled:opacity-50"
+              className="w-full sm:w-auto px-6 py-2.5 text-xs font-bold text-white bg-hospital-600 hover:bg-hospital-700 rounded-xl shadow-md transition-all disabled:opacity-50"
             >
               {saveScheduleMutation.isPending ? 'Saving Schedule...' : 'Save & Publish Schedule'}
             </button>
@@ -396,7 +396,7 @@ const DoctorScheduleManagePage = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Email *</label>
               <input
@@ -420,7 +420,7 @@ const DoctorScheduleManagePage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Department *</label>
               <select
@@ -450,7 +450,7 @@ const DoctorScheduleManagePage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Room Number</label>
               <input

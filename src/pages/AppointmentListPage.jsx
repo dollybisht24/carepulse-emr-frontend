@@ -135,11 +135,11 @@ const AppointmentListPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <ClipboardList className="w-5 h-5 text-hospital-600" />
-            {isDoctor ? 'My Patients Appointment Queue' : 'Master Appointments Registry'}
+          <h1 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+            <ClipboardList className="w-5 h-5 text-hospital-600 flex-shrink-0" />
+            <span>{isDoctor ? 'My Patients Appointment Queue' : 'Master Appointments Registry'}</span>
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             {isDoctor
@@ -148,13 +148,13 @@ const AppointmentListPage = () => {
           </p>
         </div>
 
-        <div className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl">
+        <div className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl self-start sm:self-auto">
           Total Records: <strong className="text-slate-800">{meta.total}</strong>
         </div>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Search Input */}
           <div className="relative">
@@ -231,28 +231,30 @@ const AppointmentListPage = () => {
         </div>
 
         {/* Date Filter & Sort Row */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs">
-          <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs">
+          <div className="flex flex-col xs:flex-row xs:items-center flex-wrap gap-2">
             <span className="font-semibold text-slate-600">Date Range:</span>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => {
-                setStartDate(e.target.value);
-                setPage(1);
-              }}
-              className="px-2.5 py-1 border border-slate-300 rounded-lg text-xs"
-            />
-            <span className="text-slate-400">to</span>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => {
-                setEndDate(e.target.value);
-                setPage(1);
-              }}
-              className="px-2.5 py-1 border border-slate-300 rounded-lg text-xs"
-            />
+            <div className="flex items-center gap-1.5">
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setPage(1);
+                }}
+                className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
+              />
+              <span className="text-slate-400">to</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setPage(1);
+                }}
+                className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
+              />
+            </div>
             {(startDate || endDate || search || status || doctorId || departmentId) && (
               <button
                 type="button"
@@ -265,19 +267,19 @@ const AppointmentListPage = () => {
                   setEndDate('');
                   setPage(1);
                 }}
-                className="text-hospital-600 font-semibold hover:underline ml-2"
+                className="text-hospital-600 font-semibold hover:underline self-start xs:self-auto xs:ml-2"
               >
                 Reset Filters
               </button>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between sm:justify-start gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-50">
             <span className="text-slate-500">Sort:</span>
             <select
               value={order}
               onChange={(e) => setOrder(e.target.value)}
-              className="px-2.5 py-1 border border-slate-300 rounded-lg text-xs"
+              className="px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
             >
               <option value="desc">Newest First</option>
               <option value="asc">Oldest First</option>
@@ -286,99 +288,105 @@ const AppointmentListPage = () => {
         </div>
       </div>
 
-      {/* Appointment Table */}
+      {/* Appointment Table & Mobile Cards */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          {isLoading ? (
-            <div className="p-12 text-center text-xs text-slate-500">Loading appointments...</div>
-          ) : appointments.length === 0 ? (
-            <div className="p-12 text-center text-xs text-slate-400">
-              No appointments found matching your search and filter criteria.
-            </div>
-          ) : (
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50/70 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
-                  <th className="py-3 px-4">Date & Time</th>
-                  <th className="py-3 px-4">Patient</th>
-                  {!isDoctor && <th className="py-3 px-4">Doctor & Dept</th>}
-                  <th className="py-3 px-4">Purpose</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Permitted Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {appointments.map((appt) => {
-                  const dateStr = new Date(appt.startAt).toLocaleDateString([], {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric',
-                  });
-                  const timeStr = `${new Date(appt.startAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })} - ${new Date(appt.endAt).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}`;
+        {isLoading ? (
+          <div className="p-12 text-center text-xs text-slate-500">Loading appointments...</div>
+        ) : appointments.length === 0 ? (
+          <div className="p-12 text-center text-xs text-slate-400">
+            No appointments found matching your search and filter criteria.
+          </div>
+        ) : (
+          <>
+            {/* Mobile View: Cards (< md:) */}
+            <div className="md:hidden divide-y divide-slate-100">
+              {appointments.map((appt) => {
+                const dateStr = new Date(appt.startAt).toLocaleDateString([], {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                });
+                const timeStr = `${new Date(appt.startAt).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })} - ${new Date(appt.endAt).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })}`;
 
-                  return (
-                    <tr key={appt._id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-800">{dateStr}</div>
-                        <div className="text-[11px] text-slate-500 font-mono">{timeStr}</div>
-                      </td>
-
-                      <td className="py-3 px-4">
+                return (
+                  <div key={appt._id} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
                         <div
                           onClick={() => setViewPatientAppt(appt)}
-                          className="font-semibold text-hospital-700 hover:underline cursor-pointer"
+                          className="font-semibold text-hospital-700 hover:underline cursor-pointer text-sm"
                         >
                           {appt.patientId?.name}
                         </div>
                         <div className="text-[11px] text-slate-400 font-mono">
                           {appt.patientId?.patientId} &bull; {appt.patientId?.mobile}
                         </div>
-                      </td>
+                      </div>
+                      <StatusBadge status={appt.status} />
+                    </div>
 
-                      {!isDoctor && (
-                        <td className="py-3 px-4">
-                          <div className="font-medium text-slate-800">{appt.doctorId?.userId?.name}</div>
-                          <div className="text-[11px] text-slate-500">{appt.departmentId?.name}</div>
-                        </td>
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl">
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Date & Time</span>
+                        <span className="font-semibold text-slate-800">{dateStr}</span>
+                        <div className="text-slate-500 font-mono text-[10px]">{timeStr}</div>
+                      </div>
+                      {!isDoctor ? (
+                        <div>
+                          <span className="text-slate-400 block text-[10px] uppercase font-semibold">Doctor & Dept</span>
+                          <span className="font-medium text-slate-800 line-clamp-1">{appt.doctorId?.userId?.name}</span>
+                          <div className="text-slate-500 text-[10px] truncate">{appt.departmentId?.name}</div>
+                        </div>
+                      ) : (
+                        <div>
+                          <span className="text-slate-400 block text-[10px] uppercase font-semibold">Gender & Blood</span>
+                          <span className="font-medium text-slate-700 capitalize">
+                            {appt.patientId?.gender} &bull; {appt.patientId?.bloodGroup || 'N/A'}
+                          </span>
+                        </div>
                       )}
+                    </div>
 
-                      <td className="py-3 px-4 max-w-xs text-slate-600">
-                        <p className="truncate">{appt.purpose}</p>
-                        {appt.consultationNotes && (
-                          <p className="text-[11px] text-emerald-700 italic mt-0.5 truncate">
-                            Note: {appt.consultationNotes}
-                          </p>
-                        )}
-                        {appt.status === 'cancelled' && appt.cancelledReason && (
-                          <p className="text-[11px] text-rose-600 mt-0.5 truncate">
-                            Reason: {appt.cancelledReason}
-                          </p>
-                        )}
-                      </td>
+                    {appt.purpose && (
+                      <div className="text-xs text-slate-600">
+                        <span className="text-slate-400 text-[10px] uppercase font-semibold block">Chief Complaint:</span>
+                        <p className="line-clamp-2 mt-0.5">{appt.purpose}</p>
+                      </div>
+                    )}
 
-                      <td className="py-3 px-4">
-                        <StatusBadge status={appt.status} />
-                      </td>
+                    {appt.consultationNotes && (
+                      <p className="text-[11px] text-emerald-700 bg-emerald-50/70 p-2 rounded-lg italic">
+                        Note: {appt.consultationNotes}
+                      </p>
+                    )}
 
-                      <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
-                        {/* Receptionist/Admin: Mark Arrived */}
+                    {appt.status === 'cancelled' && appt.cancelledReason && (
+                      <p className="text-[11px] text-rose-600 bg-rose-50/70 p-2 rounded-lg">
+                        Reason: {appt.cancelledReason}
+                      </p>
+                    )}
+
+                    {/* Actions */}
+                    {((isReceptionist || isAdmin) && appt.status === 'scheduled') ||
+                    ((isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status)) ||
+                    ((isReceptionist || isAdmin || isDoctor) && ['scheduled', 'arrived'].includes(appt.status)) ? (
+                      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
                         {(isReceptionist || isAdmin) && appt.status === 'scheduled' && (
                           <button
                             type="button"
                             onClick={() => handleArrive(appt._id)}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors"
+                            className="flex-1 py-1.5 px-3 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors text-center"
                           >
                             Mark Arrived
                           </button>
                         )}
 
-                        {/* Doctor/Admin: Complete Consultation & Notes */}
                         {(isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status) && (
                           <button
                             type="button"
@@ -386,55 +394,176 @@ const AppointmentListPage = () => {
                               setNotesAppt(appt);
                               setNotesText(appt.consultationNotes || '');
                             }}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
+                            className="flex-1 py-1.5 px-3 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors text-center"
                           >
                             Complete
                           </button>
                         )}
 
-                        {/* Cancel Action */}
-                        {(isReceptionist || isAdmin || isDoctor) &&
-                          ['scheduled', 'arrived'].includes(appt.status) && (
+                        {(isReceptionist || isAdmin || isDoctor) && ['scheduled', 'arrived'].includes(appt.status) && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCancelAppt(appt);
+                              setCancelReason('Patient requested cancellation');
+                            }}
+                            className="py-1.5 px-3 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors"
+                          >
+                            Cancel
+                          </button>
+                        )}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Desktop / Tablet View: Table (>= md:) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs min-w-[650px]">
+                <thead>
+                  <tr className="bg-slate-50/70 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                    <th className="py-3 px-4">Date & Time</th>
+                    <th className="py-3 px-4">Patient</th>
+                    {!isDoctor && <th className="py-3 px-4">Doctor & Dept</th>}
+                    <th className="py-3 px-4">Purpose</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Permitted Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {appointments.map((appt) => {
+                    const dateStr = new Date(appt.startAt).toLocaleDateString([], {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    });
+                    const timeStr = `${new Date(appt.startAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })} - ${new Date(appt.endAt).toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}`;
+
+                    return (
+                      <tr key={appt._id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3 px-4">
+                          <div className="font-semibold text-slate-800">{dateStr}</div>
+                          <div className="text-[11px] text-slate-500 font-mono">{timeStr}</div>
+                        </td>
+
+                        <td className="py-3 px-4">
+                          <div
+                            onClick={() => setViewPatientAppt(appt)}
+                            className="font-semibold text-hospital-700 hover:underline cursor-pointer"
+                          >
+                            {appt.patientId?.name}
+                          </div>
+                          <div className="text-[11px] text-slate-400 font-mono">
+                            {appt.patientId?.patientId} &bull; {appt.patientId?.mobile}
+                          </div>
+                        </td>
+
+                        {!isDoctor && (
+                          <td className="py-3 px-4">
+                            <div className="font-medium text-slate-800">{appt.doctorId?.userId?.name}</div>
+                            <div className="text-[11px] text-slate-500">{appt.departmentId?.name}</div>
+                          </td>
+                        )}
+
+                        <td className="py-3 px-4 max-w-xs text-slate-600">
+                          <p className="truncate">{appt.purpose}</p>
+                          {appt.consultationNotes && (
+                            <p className="text-[11px] text-emerald-700 italic mt-0.5 truncate">
+                              Note: {appt.consultationNotes}
+                            </p>
+                          )}
+                          {appt.status === 'cancelled' && appt.cancelledReason && (
+                            <p className="text-[11px] text-rose-600 mt-0.5 truncate">
+                              Reason: {appt.cancelledReason}
+                            </p>
+                          )}
+                        </td>
+
+                        <td className="py-3 px-4">
+                          <StatusBadge status={appt.status} />
+                        </td>
+
+                        <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
+                          {/* Receptionist/Admin: Mark Arrived */}
+                          {(isReceptionist || isAdmin) && appt.status === 'scheduled' && (
+                            <button
+                              type="button"
+                              onClick={() => handleArrive(appt._id)}
+                              className="px-2.5 py-1 text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors"
+                            >
+                              Mark Arrived
+                            </button>
+                          )}
+
+                          {/* Doctor/Admin: Complete Consultation & Notes */}
+                          {(isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status) && (
                             <button
                               type="button"
                               onClick={() => {
-                                setCancelAppt(appt);
-                                setCancelReason('Patient requested cancellation');
+                                setNotesAppt(appt);
+                                setNotesText(appt.consultationNotes || '');
                               }}
-                              className="px-2.5 py-1 text-[11px] font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors"
+                              className="px-2.5 py-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
                             >
-                              Cancel
+                              Complete
                             </button>
                           )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          )}
-        </div>
+
+                          {/* Cancel Action */}
+                          {(isReceptionist || isAdmin || isDoctor) &&
+                            ['scheduled', 'arrived'].includes(appt.status) && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setCancelAppt(appt);
+                                  setCancelReason('Patient requested cancellation');
+                                }}
+                                className="px-2.5 py-1 text-[11px] font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
 
         {/* Pagination Controls */}
         <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <span>Show</span>
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setPage(1);
-              }}
-              className="px-2 py-1 border border-slate-300 rounded-lg text-xs"
-            >
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-            </select>
-            <span>records per page</span>
+          <div className="flex items-center justify-between sm:justify-start gap-2">
+            <div className="flex items-center gap-1.5">
+              <span>Show</span>
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="px-2 py-1 border border-slate-300 rounded-lg text-xs"
+              >
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+              <span>per page</span>
+            </div>
+            <span className="sm:hidden text-slate-400">({meta.total} total)</span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-50">
             <span>
               Page <strong>{meta.page}</strong> of <strong>{meta.totalPages || 1}</strong>
             </span>
@@ -442,14 +571,14 @@ const AppointmentListPage = () => {
               <button
                 disabled={meta.page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="p-1 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
+                className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 disabled={meta.page >= meta.totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="p-1 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
+                className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>

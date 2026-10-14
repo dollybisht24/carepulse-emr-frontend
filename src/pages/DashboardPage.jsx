@@ -63,9 +63,9 @@ const DashboardPage = () => {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">
+          <h1 className="text-lg sm:text-xl font-bold text-slate-900">
             Welcome back, {user?.name}
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -76,11 +76,11 @@ const DashboardPage = () => {
         </div>
 
         {/* Quick Actions */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
           {(isAdmin || isReceptionist) && (
             <Link
               to="/book"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-hospital-600 hover:bg-hospital-700 shadow-sm transition-all"
+              className="inline-flex justify-center items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-white bg-hospital-600 hover:bg-hospital-700 shadow-sm transition-all"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Book Appointment</span>
@@ -88,7 +88,7 @@ const DashboardPage = () => {
           )}
           <Link
             to="/scheduler"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all"
+            className="inline-flex justify-center items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all"
           >
             <Calendar className="w-4 h-4 text-slate-500" />
             <span>View Scheduler</span>
@@ -130,7 +130,7 @@ const DashboardPage = () => {
 
       {/* Today's Priority Queue */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col xs:flex-row xs:items-center justify-between gap-2">
           <div>
             <h3 className="text-sm font-bold text-slate-900">
               {isDoctor ? "Today's Patient Queue" : "Today's Scheduled & Arrived Patients"}
@@ -142,7 +142,7 @@ const DashboardPage = () => {
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
+        <div>
           {isLoading ? (
             <div className="p-8 text-center text-xs text-slate-500">Loading live queue...</div>
           ) : stats?.upcomingAppointments?.length === 0 ? (
@@ -150,18 +150,9 @@ const DashboardPage = () => {
               No appointments pending or arrived for today.
             </div>
           ) : (
-            <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="bg-slate-50/60 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
-                  <th className="py-3 px-4">Time Slot</th>
-                  <th className="py-3 px-4">Patient</th>
-                  {!isDoctor && <th className="py-3 px-4">Doctor & Dept</th>}
-                  <th className="py-3 px-4">Purpose</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
+            <>
+              {/* Mobile Cards View (< md:) */}
+              <div className="md:hidden divide-y divide-slate-100">
                 {stats?.upcomingAppointments?.map((appt) => {
                   const startTime = new Date(appt.startAt).toLocaleTimeString([], {
                     hour: '2-digit',
@@ -173,57 +164,152 @@ const DashboardPage = () => {
                   });
 
                   return (
-                    <tr key={appt._id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-3 px-4 font-semibold text-slate-800">
-                        {startTime} - {endTime}
-                      </td>
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-800">{appt.patientId?.name}</div>
-                        <div className="text-[11px] text-slate-400 font-mono">
-                          {appt.patientId?.patientId} | {appt.patientId?.mobile}
+                    <div key={appt._id} className="p-4 space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="font-semibold text-slate-900 text-sm">{appt.patientId?.name}</div>
+                          <div className="text-[11px] text-slate-400 font-mono">
+                            {appt.patientId?.patientId} &bull; {appt.patientId?.mobile}
+                          </div>
                         </div>
-                      </td>
-                      {!isDoctor && (
-                        <td className="py-3 px-4">
-                          <div className="text-slate-800 font-medium">{appt.doctorId?.userId?.name}</div>
-                          <div className="text-[11px] text-slate-400">{appt.departmentId?.name}</div>
-                        </td>
-                      )}
-                      <td className="py-3 px-4 max-w-xs truncate text-slate-600">
-                        {appt.purpose}
-                      </td>
-                      <td className="py-3 px-4">
                         <StatusBadge status={appt.status} />
-                      </td>
-                      <td className="py-3 px-4 text-right space-x-2">
-                        {/* Receptionist Arrive action */}
-                        {(isReceptionist || isAdmin) && appt.status === 'scheduled' && (
-                          <button
-                            onClick={() => handleMarkArrived(appt._id)}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors"
-                          >
-                            Mark Arrived
-                          </button>
-                        )}
+                      </div>
 
-                        {/* Doctor Complete & Notes action */}
-                        {(isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status) && (
-                          <button
-                            onClick={() => {
-                              setSelectedAppt(appt);
-                              setNotes(appt.consultationNotes || '');
-                            }}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
-                          >
-                            Complete
-                          </button>
+                      <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl">
+                        <div>
+                          <span className="text-slate-400 text-[10px] uppercase font-semibold block">Time Slot</span>
+                          <span className="font-semibold text-slate-800 font-mono">{startTime} - {endTime}</span>
+                        </div>
+                        {!isDoctor ? (
+                          <div>
+                            <span className="text-slate-400 text-[10px] uppercase font-semibold block">Doctor & Dept</span>
+                            <span className="font-medium text-slate-800 line-clamp-1">{appt.doctorId?.userId?.name}</span>
+                            <span className="text-slate-500 text-[10px] block truncate">{appt.departmentId?.name}</span>
+                          </div>
+                        ) : (
+                          <div>
+                            <span className="text-slate-400 text-[10px] uppercase font-semibold block">Blood Group</span>
+                            <span className="font-medium text-slate-800">{appt.patientId?.bloodGroup || 'Unknown'}</span>
+                          </div>
                         )}
-                      </td>
-                    </tr>
+                      </div>
+
+                      {appt.purpose && (
+                        <div className="text-xs text-slate-600">
+                          <span className="text-slate-400 text-[10px] uppercase font-semibold block">Purpose:</span>
+                          <p className="line-clamp-2 mt-0.5">{appt.purpose}</p>
+                        </div>
+                      )}
+
+                      {/* Action buttons */}
+                      {((isReceptionist || isAdmin) && appt.status === 'scheduled') ||
+                      ((isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status)) ? (
+                        <div className="flex items-center gap-2 pt-2 border-t border-slate-100">
+                          {(isReceptionist || isAdmin) && appt.status === 'scheduled' && (
+                            <button
+                              onClick={() => handleMarkArrived(appt._id)}
+                              className="flex-1 py-1.5 px-3 text-xs font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors text-center"
+                            >
+                              Mark Arrived
+                            </button>
+                          )}
+
+                          {(isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status) && (
+                            <button
+                              onClick={() => {
+                                setSelectedAppt(appt);
+                                setNotes(appt.consultationNotes || '');
+                              }}
+                              className="flex-1 py-1.5 px-3 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors text-center"
+                            >
+                              Complete
+                            </button>
+                          )}
+                        </div>
+                      ) : null}
+                    </div>
                   );
                 })}
-              </tbody>
-            </table>
+              </div>
+
+              {/* Desktop Table View (>= md:) */}
+              <div className="hidden md:block overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs min-w-[650px]">
+                  <thead>
+                    <tr className="bg-slate-50/60 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider text-[11px]">
+                      <th className="py-3 px-4">Time Slot</th>
+                      <th className="py-3 px-4">Patient</th>
+                      {!isDoctor && <th className="py-3 px-4">Doctor & Dept</th>}
+                      <th className="py-3 px-4">Purpose</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4 text-right">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {stats?.upcomingAppointments?.map((appt) => {
+                      const startTime = new Date(appt.startAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+                      const endTime = new Date(appt.endAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      });
+
+                      return (
+                        <tr key={appt._id} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-slate-800">
+                            {startTime} - {endTime}
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-semibold text-slate-800">{appt.patientId?.name}</div>
+                            <div className="text-[11px] text-slate-400 font-mono">
+                              {appt.patientId?.patientId} | {appt.patientId?.mobile}
+                            </div>
+                          </td>
+                          {!isDoctor && (
+                            <td className="py-3 px-4">
+                              <div className="text-slate-800 font-medium">{appt.doctorId?.userId?.name}</div>
+                              <div className="text-[11px] text-slate-400">{appt.departmentId?.name}</div>
+                            </td>
+                          )}
+                          <td className="py-3 px-4 max-w-xs truncate text-slate-600">
+                            {appt.purpose}
+                          </td>
+                          <td className="py-3 px-4">
+                            <StatusBadge status={appt.status} />
+                          </td>
+                          <td className="py-3 px-4 text-right space-x-2">
+                            {/* Receptionist Arrive action */}
+                            {(isReceptionist || isAdmin) && appt.status === 'scheduled' && (
+                              <button
+                                onClick={() => handleMarkArrived(appt._id)}
+                                className="px-2.5 py-1 text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-lg transition-colors"
+                              >
+                                Mark Arrived
+                              </button>
+                            )}
+
+                            {/* Doctor Complete & Notes action */}
+                            {(isDoctor || isAdmin) && ['scheduled', 'arrived'].includes(appt.status) && (
+                              <button
+                                onClick={() => {
+                                  setSelectedAppt(appt);
+                                  setNotes(appt.consultationNotes || '');
+                                }}
+                                className="px-2.5 py-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors"
+                              >
+                                Complete
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
           )}
         </div>
       </div>
