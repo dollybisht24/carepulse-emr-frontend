@@ -13,8 +13,13 @@ export const setAccessToken = (token) => {
 
 export const getAccessToken = () => accessToken;
 
+const rawBaseUrl = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = rawBaseUrl
+  ? `${rawBaseUrl.replace(/\/$/, '')}/api/v1`
+  : '/api/v1';
+
 const api = axios.create({
-  baseURL: '/api/v1',
+  baseURL: API_BASE_URL,
   withCredentials: true, // Send HttpOnly refresh token cookie
   headers: {
     'Content-Type': 'application/json',
@@ -68,7 +73,8 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshResponse = await axios.post('/api/v1/auth/refresh', {}, { withCredentials: true });
+        const refreshUrl = `${API_BASE_URL}/auth/refresh`;
+        const refreshResponse = await axios.post(refreshUrl, {}, { withCredentials: true });
         const newAccessToken = refreshResponse.data?.data?.accessToken;
 
         setAccessToken(newAccessToken);

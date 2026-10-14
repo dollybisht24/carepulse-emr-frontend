@@ -1,6 +1,8 @@
 import { io } from 'socket.io-client';
 
-const socket = io('/', {
+const rawSocketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || '/';
+
+const socket = io(rawSocketUrl, {
   autoConnect: true,
   transports: ['websocket', 'polling'],
 });
